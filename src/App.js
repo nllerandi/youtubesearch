@@ -16,8 +16,16 @@ class App extends Component {
             videos: []
         };
 
-        YTSearch({key: API_KEY, searchTerm: "surfboards"}, (videos) => {
-            this.setState({ videos })
+        this.goSearch("farts");
+    }
+
+    goSearch(searchTerm) {
+        YTSearch({key: API_KEY, term: searchTerm}, (videos) => {
+            this.setState({
+                videos: videos,
+                selectedVideo: videos[0]
+            });
+            console.log(searchTerm);
         });
     }
 
@@ -25,9 +33,18 @@ class App extends Component {
     render() {
         return (
             <div>
-                <SearchBar />
-                <VideoDetail video={this.state.videos[0]}/>
-                <VideoList videos={this.state.videos} />
+                <SearchBar
+                    onSearchTermChange={(newTerm) => {
+                        this.goSearch(newTerm);
+                    }}
+                />
+                <VideoDetail video={this.state.selectedVideo}/>
+                <VideoList
+                    onVideoSelect={(theChosenOne) => {
+                        this.setState({selectedVideo: theChosenOne})
+                    }}
+                    videos={this.state.videos}
+                />
             </div>
         )
     }
